@@ -1,16 +1,40 @@
-# This is a sample Python script.
+import game
+import player
+import buildings
+import saveHandler
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+started = False
+info = None
+stats = player.Stats()
+events = player.Event()
+money = player.Money()
+shop = buildings.Shop({'rock': 5, 'shovel': 10})
+dataSave = {}
+# noinspection PyBroadException
+try:
+    saveData = saveHandler.load()
+    if saveData is not {}:
+        for data in saveData:
+            if data == 'money':
+                money.setMoney(saveData[data])
+            elif data == 'items':
+                for item in saveData[data]:
+                    shop.giveItem(item)
+            elif data == 'name':
+                info = player.Info(saveData[data])
+            elif data == 'started':
+                started = saveData[data]
+except:
+    exit(2)
 
+if info is None:
+    info = player.Info(input("What is your name? "))
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if started is not True:
+    started = game.start(info.getName())
+    game.intro(info.getName())
+# Game Loop
+while True:
+    money.setMoney(30)
+    saveHandler.save({'money': money.getMoney(), 'items': shop.getInv(), 'name': info.getName(), 'started': started})
+    break
