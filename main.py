@@ -1,7 +1,5 @@
-import game
-import player
-import buildings
-import saveHandler
+from gameRelated import game, saveHandler
+from playerRelated import player, buildings
 
 started = False
 info = None
